@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/28472753/README.md)
 # 🤖 Simple ChatBot
 
 A full-stack AI-powered chatbot built with a custom-trained PyTorch neural network backend and a clean, responsive web frontend. The bot understands natural language through intent classification and is trained on a rich dataset covering topics like machine learning, deep learning, NLP, computer vision, and general conversation.
