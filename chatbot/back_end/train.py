@@ -1,6 +1,5 @@
 import os
 import json
-import random
 import nltk
 import numpy as np
 import torch
@@ -26,14 +25,13 @@ class ChatBotModel(nn.Module):
         return x
 
 class ChatBotTrainer:
-    def __init__(self, intents_path, function_mappings=None):
+    def __init__(self, intents_path):
         self.model = None
         self.intents_path = intents_path
         self.documents = []
         self.vocabulary = []
         self.intents = []
         self.intents_responses = {}
-        self.function_mappings = function_mappings
         self.X = None
         self.y = None
 
@@ -125,15 +123,11 @@ class ChatBotTrainer:
         print(f"Model saved to {model_path}")
         print(f"Dimensions saved to {dimensions_path}")
 
-def get_stocks():
-    stocks = ['AAPL', 'META', 'NVDA', 'GS', 'MSFT']
-    return random.sample(stocks, 3)
-
 if __name__ == '__main__':
     # Train the model
     print("=== ChatBot Training ===")
     
-    trainer = ChatBotTrainer('intents.json', function_mappings={'stocks': get_stocks})
+    trainer = ChatBotTrainer('intents.json')
     
     # Parse intents and prepare data
     trainer.parse_intents()
