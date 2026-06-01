@@ -40,14 +40,13 @@ class ChatBotModel(nn.Module):
         return x
 
 class ChatBotAssistant:
-    def __init__(self, intents_path, function_mappings=None):
+    def __init__(self, intents_path):
         self.model = None
         self.intents_path = intents_path
         self.documents = []
         self.vocabulary = []
         self.intents = []
         self.intents_responses = {}
-        self.function_mappings = function_mappings
         self.X = None
         self.y = None
 
@@ -109,15 +108,6 @@ class ChatBotAssistant:
         predicted_class_index = torch.argmax(predictions, dim=1).item()
         predicted_intent = self.intents[predicted_class_index]
 
-        # Handle function mappings if needed
-        if self.function_mappings and predicted_intent in self.function_mappings:
-            function_result = self.function_mappings[predicted_intent]()
-            return {
-                "response": random.choice(self.intents_responses[predicted_intent]),
-                "function_result": function_result,
-                "intent": predicted_intent
-            }
-
         if predicted_intent in self.intents_responses and self.intents_responses[predicted_intent]:
             return {
                 "response": random.choice(self.intents_responses[predicted_intent]),
@@ -137,14 +127,10 @@ async def lifespan(app: FastAPI):
     # Startup
     global chatbot
     
-    def get_stocks():
-        stocks = ['AAPL', 'META', 'NVDA', 'GS', 'MSFT']
-        return random.sample(stocks, 3)
-    
     # Initialize and load the chatbot
     try:
         print("Loading chatbot...")
-        chatbot = ChatBotAssistant('intents.json', function_mappings={'stocks': get_stocks})
+        chatbot = ChatBotAssistant('intents.json')
         chatbot.parse_intents()
         chatbot.load_model('chatbot_model.pth', 'dimensions.json')
         print("✅ Chatbot loaded and ready!")
@@ -180,13 +166,9 @@ async def chat(request: ChatRequest):
     
     try:
         result = chatbot.process_message(request.message)
-        
-        # Format the response based on whether there's function result
-        if isinstance(result, dict) and 'function_result' in result:
-            reply = f"{result['response']} Here are some stock suggestions: {', '.join(result['function_result'])}"
-        else:
-            reply = result['response']
-            
+
+        reply = result['response']
+
         return {"reply": reply}
         
     except Exception as e:
