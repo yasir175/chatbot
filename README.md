@@ -158,12 +158,12 @@ Send a message to the chatbot.
 
 **Request body:**
 ```json
-{ "message": "What is machine learning?" }
+{ "message": "What is NLP?" }
 ```
 
 **Response:**
 ```json
-{ "reply": "Machine learning is a subset of AI that enables systems to learn from data." }
+{ "reply": "Natural Language Processing (NLP) is a field of artificial intelligence that focuses on the interaction between computers and humans using natural language." }
 ```
 
 ### `GET /health`
